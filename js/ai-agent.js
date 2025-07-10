@@ -171,37 +171,23 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.shadowBlur = 0;
         });
         
-        // Полупрозрачный прямоугольник для текста
-        const rectWidth = canvas.width - 60; // Отступы 30px с каждой стороны
-        const rectHeight = canvas.height - 200; // Отступы 100px сверху и снизу
-        const rectX = (canvas.width - rectWidth) / 2;
-        const rectY = (canvas.height - rectHeight) / 2;
-        
-        ctx.fillStyle = 'rgba(10, 10, 26, 0.8)';
-        ctx.beginPath();
-        ctx.roundRect(rectX, rectY, rectWidth, rectHeight, 20); // Закругленные углы
-        ctx.fill();
-        
         // Текст
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
         // Разбиваем текст на строки
         const lines = text.split('\n').map(line => line.trim());
-        const maxWidth = rectWidth - 40; // Отступы внутри прямоугольника
-        const lineHeight = 28;
+        const maxWidth = canvas.width - 80; // Отступы 40px слева и справа
+        const lineHeight = 26; // Компактный межстрочный интервал
         const wrappedLines = [];
         
         // Обертка текста
         lines.forEach(line => {
-            if (line.startsWith('**Цитата**')) {
-                ctx.font = 'bold 24px Courier New';
-                wrappedLines.push({ text: line, bold: true });
-            } else if (line.startsWith('**Пояснение**')) {
-                ctx.font = 'bold 22px Courier New';
+            if (line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
+                ctx.font = 'bold 20px Courier New';
                 wrappedLines.push({ text: line, bold: true });
             } else {
-                ctx.font = '20px Courier New';
+                ctx.font = '18px Courier New';
                 const words = line.split(' ');
                 let currentLine = '';
                 words.forEach(word => {
@@ -218,15 +204,20 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Ограничиваем высоту текста
+        // Равномерное распределение текста
+        const topMargin = 40; // Отступ сверху
+        const bottomMargin = 40; // Отступ снизу
+        const availableHeight = canvas.height - topMargin - bottomMargin; // 944px
         const totalTextHeight = wrappedLines.length * lineHeight;
-        const startY = rectY + (rectHeight - totalTextHeight) / 2; // Центрируем по вертикали внутри прямоугольника
+        const extraSpacing = wrappedLines.length > 1 ? (availableHeight - totalTextHeight) / (wrappedLines.length - 1) : 0;
+        const adjustedLineHeight = lineHeight + Math.min(extraSpacing, lineHeight * 0.5); // Ограничиваем доп. интервал
+        let startY = topMargin + lineHeight / 2;
         
         // Рендеринг текста
         wrappedLines.forEach((lineObj, index) => {
-            ctx.font = lineObj.bold ? 'bold 24px Courier New' : '20px Courier New';
-            ctx.fillStyle = '#ffffff'; // Белый текст, как в примере
-            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * lineHeight);
+            ctx.font = lineObj.bold ? 'bold 20px Courier New' : '18px Courier New';
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * adjustedLineHeight);
         });
         
         // Отображение и скачивание
