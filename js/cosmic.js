@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const comets = [];
     const starCount = 100;
     const cometCount = 5;
-    const neonColors = ['#00eaff', '#ff00cc', '#00ffaa'];
+    const neonColors = ['#00d4ff', '#ff00a8', '#00ffaa'];
 
     // Создание звезд
     for (let i = 0; i < starCount; i++) {
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             size: Math.random() * 2 + 1,
-            opacity: Math.random() * 0.5 + 0.5,
-            color: neonColors[Math.floor(Math.random() * neonColors.length)]
+            color: neonColors[Math.floor(Math.random() * neonColors.length)],
+            opacity: Math.random() * 0.5 + 0.5
         });
     }
 
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             length: Math.random() * 30 + 20,
-            speed: Math.random() * 2 + 1,
+            speed: Math.random() * 3 + 2,
             angle: Math.random() * Math.PI * 2,
             color: neonColors[Math.floor(Math.random() * neonColors.length)]
         });
@@ -71,16 +71,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 comet.color = neonColors[Math.floor(Math.random() * neonColors.length)];
             }
 
-            const gradient = ctx.createLinearGradient(
-                comet.x, comet.y,
-                comet.x - dx * comet.length, comet.y - dy * comet.length
-            );
-            gradient.addColorStop(0, comet.color);
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
             ctx.beginPath();
             ctx.moveTo(comet.x, comet.y);
             ctx.lineTo(comet.x - dx * comet.length, comet.y - dy * comet.length);
-            ctx.strokeStyle = gradient;
+            ctx.strokeStyle = comet.color;
             ctx.lineWidth = 2;
             ctx.stroke();
         });
@@ -116,13 +110,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = event.results[0][0].transcript;
         userInput.value = message;
         sendMessage();
-        voiceButton.style.background = 'var(--cosmic-blue)';
+        voiceButton.style.background = 'var(--neon-blue)';
     };
 
     recognition.onerror = () => {
         chatHistory.push({ role: 'assistant', content: '> Ошибка распознавания голоса. Попробуйте снова.' });
         updateChat();
-        voiceButton.style.background = 'var(--cosmic-blue)';
+        voiceButton.style.background = 'var(--neon-blue)';
     };
 
     const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -194,9 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const imgCtx = imgCanvas.getContext('2d');
 
         // Космический фон
-        const gradient = imgCtx.createRadialGradient(270, 480, 0, 270, 480, 600);
-        gradient.addColorStop(0, '#1a1a1f');
-        gradient.addColorStop(1, '#000000');
+        const gradient = imgCtx.createLinearGradient(0, 0, 0, 960);
+        gradient.addColorStop(0, '#1c1c1c');
+        gradient.addColorStop(1, '#0a0a0a');
         imgCtx.fillStyle = gradient;
         imgCtx.fillRect(0, 0, 540, 960);
 
@@ -211,23 +205,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 Math.PI * 2
             );
             imgCtx.fillStyle = neonColors[Math.floor(Math.random() * neonColors.length)];
+            imgCtx.globalAlpha = Math.random() * 0.5 + 0.5;
             imgCtx.fill();
         }
+        imgCtx.globalAlpha = 1;
 
         // Обработка текста
-        imgCtx.font = 'bold 48px Arial';
-        imgCtx.fillStyle = '#e6f0ff';
+        imgCtx.font = 'bold 36px Arial';
+        imgCtx.fillStyle = '#e6e6ff';
         imgCtx.textAlign = 'center';
         imgCtx.textBaseline = 'middle';
 
         const lines = text.split('\n').filter(line => line.trim());
-        const maxWidth = 500;
-        const lineHeight = 60;
-        let y = 480 - (lines.length * lineHeight) / 2; // Центрирование по вертикали
-
+        let y = 200;
         lines.forEach(line => {
+            const words = line.split(' ');
             let currentLine = '';
-            for (let word of line.split(' ')) {
+            const maxWidth = 500;
+            let lineHeight = 45;
+
+            for (let word of words) {
                 const testLine = currentLine + word + ' ';
                 const metrics = imgCtx.measureText(testLine);
                 if (metrics.width > maxWidth) {
@@ -239,7 +236,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             imgCtx.fillText(currentLine, 270, y);
-            y += lineHeight;
+            y += lineHeight * 1.5;
         });
 
         const img = new Image();
@@ -252,8 +249,9 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'ai_response.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = 'var(--cosmic-blue)';
+        downloadLink.style.color = 'var(--neon-blue)';
         downloadLink.style.marginTop = '1rem';
+        downloadLink.style.fontSize = '1.5rem';
         imageOutput.appendChild(downloadLink);
     }
 });
