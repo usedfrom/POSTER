@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     messages: [
                         {
                             role: 'system',
-                            content: 'Ты — AI-ассистент, создающий вдохновляющие цитаты по любой теме, заданной пользователем. Формат ответа: \n**Цитата**: [Короткая, мощная фраза, вдохновляющая на действие или размышление].\n**Пояснение**: [Краткое объяснение смысла цитаты, мотивирующее и поддерживающее].\nСтиль — лаконичный, вдохновляющий, с элементами киберпанка. Используй термины: "сила", "энергия", "цель", "путь". Игнорируй вопросы, выходящие за рамки создания цитат, и перенаправляй к теме вдохновения. Пример:\n**Цитата**: Сила твоего пути — в каждом сделанном шаге.\n**Пояснение**: Каждый выбор приближает тебя к цели — двигайся с энергией и верой.'
+                            content: 'Ты — AI-ассистент, создающий вдохновляющие цитаты по любой теме, заданной пользователем. Формат ответа: \n**Суть дня**: [Краткое вдохновляющее утверждение, задающее тон дня].\n**Цитата**: [Короткая, мощная фраза, вдохновляющая на действие или размышление].\n**Пояснение**: [Краткое объяснение смысла цитаты, мотивирующее и поддерживающее].\nСтиль — лаконичный, вдохновляющий, с элементами киберпанка. Используй термины: "сила", "энергия", "цель", "путь". Игнорируй вопросы, выходящие за рамки создания цитат, и перенаправляй к теме вдохновения. Пример:\n**Суть дня**: Сегодня ты создаешь свой путь.\n**Цитата**: Сила твоего пути — в каждом сделанном шаге.\n**Пояснение**: Каждый выбор приближает тебя к цели — двигайся с энергией и верой.'
                         },
                         ...chatHistory
                     ],
@@ -171,23 +171,35 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.shadowBlur = 0;
         });
         
+        // Настраиваемые параметры текста
+        const fontSizeBold = 66; // Размер жирного шрифта (для заголовков: Суть дня, Цитата, Пояснение)
+        const fontSizeRegular = 60; // Размер обычного шрифта (для текста)
+        const lineHeight = 80; // Межстрочный интервал (расстояние между строками)
+        const padding = 60; // Отступы со всех сторон (в пикселях)
+        const maxWidth = canvas.width - 2 * padding; // Максимальная ширина текста (в пикселях)
+        
+        // Как настроить параметры:
+        // - fontSizeBold: Увеличьте/уменьшите для изменения размера заголовков (например, 70 для больше, 50 для меньше).
+        // - fontSizeRegular: Увеличьте/уменьшите для изменения размера основного текста (например, 65 или 45).
+        // - lineHeight: Увеличьте для большего расстояния между строками (например, 90), уменьшите для компактности (например, 70).
+        // - padding: Увеличьте для больших отступов от краев (например, 80), уменьшите для меньших (например, 40).
+        // - maxWidth: Не меняйте вручную, он рассчитывается как canvas.width - 2 * padding.
+        
         // Текст
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
         // Разбиваем текст на строки
         const lines = text.split('\n').map(line => line.trim());
-        const maxWidth = canvas.width - 80; // Отступы 40px слева и справа
-        const lineHeight = 26; // Компактный межстрочный интервал
         const wrappedLines = [];
         
         // Обертка текста
         lines.forEach(line => {
-            if (line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
-                ctx.font = 'bold 20px Courier New';
+            if (line.startsWith('**Суть дня**') || line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
+                ctx.font = `bold ${fontSizeBold}px Courier New`;
                 wrappedLines.push({ text: line, bold: true });
             } else {
-                ctx.font = '18px Courier New';
+                ctx.font = `${fontSizeRegular}px Courier New`;
                 const words = line.split(' ');
                 let currentLine = '';
                 words.forEach(word => {
@@ -204,20 +216,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Равномерное распределение текста
-        const topMargin = 40; // Отступ сверху
-        const bottomMargin = 40; // Отступ снизу
-        const availableHeight = canvas.height - topMargin - bottomMargin; // 944px
+        // Распределяем текст равномерно
+        const textAreaHeight = canvas.height - 2 * padding; // Высота области для текста
         const totalTextHeight = wrappedLines.length * lineHeight;
-        const extraSpacing = wrappedLines.length > 1 ? (availableHeight - totalTextHeight) / (wrappedLines.length - 1) : 0;
-        const adjustedLineHeight = lineHeight + Math.min(extraSpacing, lineHeight * 0.5); // Ограничиваем доп. интервал
-        let startY = topMargin + lineHeight / 2;
+        let startY = padding + (textAreaHeight - totalTextHeight) / 2; // Начальная Y для центрирования
         
         // Рендеринг текста
         wrappedLines.forEach((lineObj, index) => {
-            ctx.font = lineObj.bold ? 'bold 20px Courier New' : '18px Courier New';
+            ctx.font = lineObj.bold ? `bold ${fontSizeBold}px Courier New` : `${fontSizeRegular}px Courier New`;
             ctx.fillStyle = '#00ffcc';
-            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * adjustedLineHeight);
+            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * lineHeight);
         });
         
         // Отображение и скачивание
