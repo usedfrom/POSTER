@@ -1,11 +1,10 @@
 :root {
-    --cosmic-black: #0a0a0a;
-    --cosmic-gray: #1c1c1e;
-    --neon-blue: #00b7eb;
-    --neon-pink: #ff00a8;
-    --neon-purple: #bd00ff;
+    --cosmic-black: #0a0a14;
+    --cosmic-blue: #00e6ff;
+    --cosmic-pink: #ff00cc;
+    --cosmic-green: #00ff99;
     --cosmic-white: #e6f0ff;
-    --cosmic-glow: 0 0 10px rgba(0, 183, 235, 0.7);
+    --cosmic-glow: 0 0 12px rgba(0, 230, 255, 0.6);
 }
 
 * {
@@ -29,7 +28,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(180deg, var(--cosmic-black) 0%, var(--cosmic-gray) 100%);
+    background: radial-gradient(circle at center, #1a1a28 0%, #0a0a14 100%);
     z-index: -1;
 }
 
@@ -47,8 +46,8 @@ body {
     max-height: 50vh;
     overflow-y: auto;
     padding: 1rem;
-    background: rgba(10, 10, 10, 0.8);
-    border: 1px solid var(--neon-blue);
+    background: rgba(10, 10, 20, 0.8);
+    border: 1px solid var(--cosmic-blue);
     border-radius: 10px;
     color: var(--cosmic-white);
 }
@@ -60,7 +59,7 @@ body {
 }
 
 .chat-message.user {
-    color: var(--neon-pink);
+    color: var(--cosmic-green);
 }
 
 .chat-message.agent {
@@ -74,7 +73,7 @@ body {
 
 .image-output img {
     max-width: 100%;
-    border: 1px solid var(--neon-blue);
+    border: 1px solid var(--cosmic-blue);
     border-radius: 10px;
 }
 
@@ -82,8 +81,8 @@ body {
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(10, 10, 10, 0.9);
-    border: 1px solid var(--neon-blue);
+    background: rgba(10, 10, 20, 0.9);
+    border: 1px solid var(--cosmic-blue);
     border-radius: 20px;
     position: sticky;
     bottom: 1rem;
@@ -100,7 +99,7 @@ body {
 }
 
 .input-panel input::placeholder {
-    color: var(--neon-blue);
+    color: var(--cosmic-blue);
 }
 
 .cosmic-button {
@@ -109,7 +108,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--neon-blue);
+    background: var(--cosmic-blue);
     border-radius: 50%;
     color: var(--cosmic-white);
     cursor: pointer;
