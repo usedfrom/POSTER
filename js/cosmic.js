@@ -15,33 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
     cosmicBackground.appendChild(canvas);
 
     const stars = [];
-    const comets = [];
     const clouds = [];
+    const comets = [];
     const starCount = 80;
-    const cometCount = 2;
     const cloudCount = 5;
-    const neonColors = ['#ff4d4d', '#00ccff', '#ff00cc'];
-    const cloudColors = ['rgba(200, 200, 200, 0.2)', 'rgba(255, 100, 100, 0.2)', 'rgba(100, 150, 255, 0.2)'];
+    const cometCount = 3;
+    const neonColors = ['#ff00ff', '#00ffcc'];
 
     // Создание звезд
     for (let i = 0; i < starCount; i++) {
         stars.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            size: Math.random() * 1.5 + 0.5,
+            size: Math.random() * 2 + 1,
             opacity: Math.random() * 0.4 + 0.3,
-            color: neonColors[Math.floor(Math.random() * neonColors.length)]
-        });
-    }
-
-    // Создание комет
-    for (let i = 0; i < cometCount; i++) {
-        comets.push({
-            x: Math.random() * canvas.width,
-            y: Math.random() * canvas.height,
-            length: Math.random() * 20 + 15,
-            speed: Math.random() * 1.5 + 0.5,
-            angle: Math.random() * Math.PI * 2,
             color: neonColors[Math.floor(Math.random() * neonColors.length)]
         });
     }
@@ -51,9 +38,20 @@ document.addEventListener('DOMContentLoaded', function() {
         clouds.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            size: Math.random() * 100 + 50,
-            opacity: Math.random() * 0.1 + 0.1,
-            color: cloudColors[Math.floor(Math.random() * cloudColors.length)]
+            radius: Math.random() * 50 + 30,
+            opacity: Math.random() * 0.2 + 0.1
+        });
+    }
+
+    // Создание комет
+    for (let i = 0; i < cometCount; i++) {
+        comets.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            length: Math.random() * 40 + 20,
+            speed: Math.random() * 1.5 + 0.5,
+            angle: Math.random() * Math.PI * 2,
+            color: neonColors[Math.floor(Math.random() * neonColors.length)]
         });
     }
 
@@ -62,45 +60,47 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Рисование облаков
         clouds.forEach(cloud => {
+            const gradient = ctx.createRadialGradient(cloud.x, cloud.y, 0, cloud.x, cloud.y, cloud.radius);
+            gradient.addColorStop(0, `rgba(74, 74, 74, ${cloud.opacity})`);
+            gradient.addColorStop(0.5, `rgba(255, 64, 64, ${cloud.opacity * 0.8})`);
+            gradient.addColorStop(1, `rgba(230, 230, 230, ${cloud.opacity * 0.5})`);
             ctx.beginPath();
-            ctx.arc(cloud.x, cloud.y, cloud.size, 0, Math.PI * 2);
-            ctx.fillStyle = cloud.color;
-            ctx.globalAlpha = cloud.opacity;
+            ctx.arc(cloud.x, cloud.y, cloud.radius, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
             ctx.fill();
-            cloud.x += 0.1;
-            if (cloud.x > canvas.width + cloud.size) cloud.x = -cloud.size;
         });
 
         // Рисование звезд
-        ctx.globalAlpha = 1;
         stars.forEach(star => {
             ctx.beginPath();
             ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
             ctx.fillStyle = star.color;
             ctx.globalAlpha = star.opacity;
             ctx.fill();
-            star.opacity = Math.max(0.3, star.opacity + (Math.random() - 0.5) * 0.01);
+            star.opacity = Math.max(0.3, star.opacity + (Math.random() - 0.5) * 0.02);
         });
+        ctx.globalAlpha = 1;
 
         // Рисование комет
-        ctx.globalAlpha = 1;
         comets.forEach(comet => {
             const dx = Math.cos(comet.angle) * comet.speed;
             const dy = Math.sin(comet.angle) * comet.speed;
             comet.x += dx;
             comet.y += dy;
 
-            if (comet.x < -comet.length || comet.x > canvas.width + comet.length || comet.y < -comet.length || comet.y > canvas.height + comet.length) {
+            if (comet.x < 0 || comet.x > canvas.width || comet.y < 0 || comet.y > canvas.height) {
                 comet.x = Math.random() * canvas.width;
-                comet.y = Math օждем.random() * canvas.height;
+                comet.y = Math.random() * canvas.height;
                 comet.angle = Math.random() * Math.PI * 2;
                 comet.color = neonColors[Math.floor(Math.random() * neonColors.length)];
             }
 
-            // Рисование хвоста с неоновым шлейфом
-            const gradient = ctx.createLinearGradient(comet.x, comet.y, comet.x - dx * comet.length, comet.y - dy * comet.length);
+            const gradient = ctx.createLinearGradient(
+                comet.x, comet.y,
+                comet.x - dx * comet.length, comet.y - dy * comet.length
+            );
             gradient.addColorStop(0, comet.color);
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
             ctx.beginPath();
             ctx.moveTo(comet.x, comet.y);
             ctx.lineTo(comet.x - dx * comet.length, comet.y - dy * comet.length);
@@ -133,20 +133,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     voiceButton.addEventListener('click', () => {
         recognition.start();
-        voiceButton.style.background = '#ff4d4d';
+        voiceButton.style.background = '#00ffcc';
     });
 
     recognition.onresult = (event) => {
         const message = event.results[0][0].transcript;
         userInput.value = message;
         sendMessage();
-        voiceButton.style.background = 'var(--cosmic-neon-blue)';
+        voiceButton.style.background = 'var(--cosmic-neon-pink)';
     };
 
     recognition.onerror = () => {
         chatHistory.push({ role: 'assistant', content: '> Ошибка распознавания голоса. Попробуйте снова.' });
         updateChat();
-        voiceButton.style.background = 'var(--cosmic-neon-blue)';
+        voiceButton.style.background = 'var(--cosmic-neon-pink)';
     };
 
     const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     messages: [
                         {
                             role: 'system',
-                            content: 'Ты — вдохновляющий AI-ассистент. Отвечай на любой вопрос пользователя в формате:\n[Что если]: [Короткая, мощная и вдохновляющая фраза].\n\n[Значит]: [Краткое разъяснение цитаты, мотивирующее и вдохновляющее].\nКаждый заголовок ([Что если], [Значит]) начинается с новой строки, между ними пустая строка. Стиль — лаконичный, позитивный, энергичный. Пример:\n[Что если]: Кто управляет своими эмоциями, тот управляет своей судьбой.\n\n[Значит]: Учись распознавать и направлять эмоции, а не поддаваться им.'
+                            content: 'Ты — вдохновляющий AI-ассистент. Отвечай на любой вопрос пользователя в формате:\n[Что если]: [Корот Penal Codeкая, мощная и вдохновляющая фраза].\n\n[Значит]: [Краткое разъяснение цитаты, мотивирующее и вдохновляющее].\nКаждый заголовок ([Что если], [Значит]) начинается с новой строки, между ними пустая строка. Стиль — лаконичный, позитивный, энергичный. Пример:\n[Что если]: Кто управляет своими эмоциями, тот управляет своей судьбой.\n\n[Значит]: Учись распознавать и направлять эмоции, а не поддаваться им.'
                         },
                         ...chatHistory
                     ],
@@ -219,50 +219,57 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Космический фон
         const gradient = imgCtx.createRadialGradient(270, 480, 0, 270, 480, 600);
-        gradient.addColorStop(0, '#1c1c2a');
-        gradient.addColorStop(1, '#0a0a0a');
+        gradient.addColorStop(0, '#1a1a1a');
+        gradient.addColorStop(1, '#000000');
         imgCtx.fillStyle = gradient;
         imgCtx.fillRect(0, 0, 540, 960);
 
-        // Добавление облаков
-        for (let i = 0; i < 10; i++) {
+        // Облака
+        for (let i = 0; i < 5; i++) {
+            const gradient = imgCtx.createRadialGradient(
+                Math.random() * 540,
+                Math.random() * 960,
+                0,
+                Math.random() * 540,
+                Math.random() * 960,
+                80
+            );
+            gradient.addColorStop(0, `rgba(74, 74, 74, 0.2)`);
+            gradient.addColorStop(0.5, `rgba(255, 64, 64, 0.15)`);
+            gradient.addColorStop(1, `rgba(230, 230, 230, 0.1)`);
             imgCtx.beginPath();
             imgCtx.arc(
                 Math.random() * 540,
                 Math.random() * 960,
-                Math.random() * 80 + 40,
-                0,
-                Math.PI * 2
+                80, 0, Math.PI * 2
             );
-            imgCtx.fillStyle = cloudColors[Math.floor(Math.random() * cloudColors.length)];
-            imgCtx.globalAlpha = 0.2;
+            imgCtx.fillStyle = gradient;
             imgCtx.fill();
         }
 
-        // Добавление неоновых звезд
-        for (let i = 0; i < 20; i++) {
+        // Неоновые звезды
+        for (let i = 0; i < 50; i++) {
             imgCtx.beginPath();
             imgCtx.arc(
                 Math.random() * 540,
                 Math.random() * 960,
-                Math.random() * 1.5,
+                Math.random() * 2,
                 0,
                 Math.PI * 2
             );
             imgCtx.fillStyle = neonColors[Math.floor(Math.random() * neonColors.length)];
-            imgCtx.globalAlpha = 1;
             imgCtx.fill();
         }
 
         // Обработка текста
         imgCtx.font = 'bold 36px Arial';
-        imgCtx.fillStyle = '#e6f0ff';
+        imgCtx.fillStyle = '#f0f0f0';
         imgCtx.textAlign = 'center';
         imgCtx.textBaseline = 'middle';
 
         const lines = text.split('\n').filter(line => line.trim());
-        let y = 180;
-        const maxWidth = 480;
+        let y = 200;
+        const maxWidth = 500;
         const lineHeight = 45;
 
         lines.forEach(line => {
@@ -280,7 +287,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             imgCtx.fillText(currentLine, 270, y);
-            y += lineHeight * 1.3;
+            y += lineHeight * 1.5;
         });
 
         const img = new Image();
@@ -293,9 +300,8 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'ai_response.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = 'var(--cosmic-neon-blue)';
-        downloadLink.style.marginTop = '0.5rem';
-        downloadLink.style.fontSize = '0.9rem';
+        downloadLink.style.color = 'var(--cosmic-neon-pink)';
+        downloadLink.style.marginTop = '1rem';
         imageOutput.appendChild(downloadLink);
     }
 });
