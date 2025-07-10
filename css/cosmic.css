@@ -1,10 +1,11 @@
 :root {
-    --cosmic-black: #0a0a0f;
-    --cosmic-blue: #00eaff;
-    --cosmic-pink: #ff00cc;
-    --cosmic-green: #00ffaa;
-    --cosmic-white: #e6f0ff;
-    --cosmic-glow: 0 0 10px rgba(0, 234, 255, 0.7);
+    --cosmic-black: #0a0a0a;
+    --cosmic-gray: #1c1c1c;
+    --neon-blue: #00d4ff;
+    --neon-pink: #ff00a8;
+    --neon-green: #00ffaa;
+    --cosmic-white: #e6e6ff;
+    --cosmic-glow: 0 0 12px rgba(0, 212, 255, 0.7);
 }
 
 * {
@@ -28,7 +29,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, #1a1a1f 0%, #000000 100%);
+    background: linear-gradient(to bottom, var(--cosmic-gray) 0%, var(--cosmic-black) 100%);
     z-index: -1;
 }
 
@@ -46,20 +47,20 @@ body {
     max-height: 50vh;
     overflow-y: auto;
     padding: 1rem;
-    background: rgba(10, 10, 15, 0.8);
-    border: 1px solid var(--cosmic-blue);
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid var(--neon-blue);
     border-radius: 10px;
     color: var(--cosmic-white);
+    font-size: 1.5rem;
 }
 
 .chat-message {
     margin: 0.5rem 0;
-    font-size: 1rem;
     line-height: 1.4;
 }
 
 .chat-message.user {
-    color: var(--cosmic-green);
+    color: var(--neon-green);
 }
 
 .chat-message.agent {
@@ -73,7 +74,7 @@ body {
 
 .image-output img {
     max-width: 100%;
-    border: 1px solid var(--cosmic-blue);
+    border: 1px solid var(--neon-blue);
     border-radius: 10px;
 }
 
@@ -81,8 +82,8 @@ body {
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(10, 10, 15, 0.9);
-    border: 1px solid var(--cosmic-blue);
+    background: rgba(10, 10, 10, 0.9);
+    border: 1px solid var(--neon-blue);
     border-radius: 20px;
     position: sticky;
     bottom: 1rem;
@@ -94,12 +95,12 @@ body {
     background: transparent;
     border: none;
     color: var(--cosmic-white);
-    font-size: 1rem;
+    font-size: 1.5rem;
     outline: none;
 }
 
 .input-panel input::placeholder {
-    color: var(--cosmic-blue);
+    color: var(--neon-blue);
 }
 
 .cosmic-button {
@@ -108,7 +109,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--cosmic-blue);
+    background: var(--neon-blue);
     border-radius: 50%;
     color: var(--cosmic-white);
     cursor: pointer;
@@ -123,5 +124,13 @@ body {
 @media (max-width: 768px) {
     .mainframe {
         width: 95%;
+    }
+
+    .chat-body {
+        font-size: 1.2rem;
+    }
+
+    .input-panel input {
+        font-size: 1.2rem;
     }
 }
