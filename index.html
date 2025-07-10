@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSMIC AI :: Вдохновение</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/cosmic.css">
+</head>
+<body>
+    <div class="cosmic-background"></div>
+    
+    <main class="mainframe">
+        <div class="chat-body" id="chatBody"></div>
+        <div class="result-image" id="resultImage"></div>
+        <div class="input-panel">
+            <input type="text" id="userInput" placeholder="Задайте тему для вдохновения...">
+            <div class="input-buttons">
+                <div class="cosmic-button" id="sendTextButton">
+                    <i class="fas fa-paper-plane"></i>
+                    <span class="button-label">ТЕКСТ</span>
+                </div>
+                <div class="cosmic-button" id="sendVoiceButton">
+                    <i class="fas fa-microphone"></i>
+                    <span class="button-label">ГОЛОС</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/cosmic.js"></script>
+    <script src="js/ai-agent.js"></script>
+</body>
+</html>
