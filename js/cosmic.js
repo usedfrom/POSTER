@@ -10,16 +10,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     const comets = [];
     const stars = [];
-    const cometCount = 20;
-    const starCount = 100;
+    const cometCount = 30;
+    const starCount = 150;
+    const neonColors = ['#00ffcc', '#ff00ff', '#00b7eb'];
     
     // Создание звезд
     for (let i = 0; i < starCount; i++) {
         stars.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            size: Math.random() * 2 + 1,
-            opacity: Math.random() * 0.5 + 0.3
+            size: Math.random() * 1 + 0.5, // Меньший размер
+            color: neonColors[Math.floor(Math.random() * neonColors.length)],
+            opacity: Math.random() * 0.6 + 0.4
         });
     }
     
@@ -28,8 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
         comets.push({
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
-            size: Math.random() * 3 + 2,
-            speed: Math.random() * 2 + 1,
+            size: Math.random() * 1 + 1, // Меньший размер
+            speed: Math.random() * 1.5 + 0.5,
+            color: neonColors[Math.floor(Math.random() * neonColors.length)],
             opacity: 0
         });
     }
@@ -41,15 +44,18 @@ document.addEventListener('DOMContentLoaded', function() {
         stars.forEach(star => {
             ctx.beginPath();
             ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            ctx.fillStyle = star.color;
+            ctx.shadowColor = star.color;
+            ctx.shadowBlur = 8;
             ctx.fill();
+            ctx.shadowBlur = 0;
         });
         
         // Рисование и анимация комет
         comets.forEach(comet => {
             comet.x -= comet.speed;
             comet.y -= comet.speed;
-            comet.opacity = Math.min(comet.opacity + 0.01, 0.8);
+            comet.opacity = Math.min(comet.opacity + 0.02, 1);
             
             if (comet.x < -comet.size || comet.y < -comet.size) {
                 comet.x = canvas.width + comet.size;
@@ -59,8 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
             
             ctx.beginPath();
             ctx.arc(comet.x, comet.y, comet.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(0, 183, 235, ${comet.opacity})`;
+            ctx.fillStyle = comet.color;
+            ctx.shadowColor = comet.color;
+            ctx.shadowBlur = 10;
             ctx.fill();
+            ctx.shadowBlur = 0;
         });
         
         requestAnimationFrame(animateCosmic);
