@@ -116,26 +116,99 @@ document.addEventListener('DOMContentLoaded', function() {
     
     function generateImage(text) {
         const canvas = document.createElement('canvas');
-        canvas.width = 576; // 9x16 для телефона
+        canvas.width = 576; // 9x16
         canvas.height = 1024;
         const ctx = canvas.getContext('2d');
         
-        // Фон
-        ctx.fillStyle = '#1a1a3a';
+        // Фон с кометами и звездами
+        ctx.fillStyle = 'radial-gradient(circle at center, #1c2526 0%, #0a0a0a 100%)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
+        // Генерация звезд
+        const stars = [];
+        const starCount = 50;
+        const neonColors = ['#00ffcc', '#ff00ff', '#00b7eb'];
+        for (let i = 0; i < starCount; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1 + 0.5,
+                color: neonColors[Math.floor(Math.random() * neonColors.length)]
+            });
+        }
+        
+        // Генерация комет
+        const comets = [];
+        const cometCount = 10;
+        for (let i = 0; i < cometCount; i++) {
+            comets.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1 + 1,
+                color: neonColors[Math.floor(Math.random() * neonColors.length)]
+            });
+        }
+        
+        // Рисование звезд
+        stars.forEach(star => {
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            ctx.fillStyle = star.color;
+            ctx.shadowColor = star.color;
+            ctx.shadowBlur = 8;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        });
+        
+        // Рисование комет
+        comets.forEach(comet => {
+            ctx.beginPath();
+            ctx.arc(comet.x, comet.y, comet.size, 0, Math.PI * 2);
+            ctx.fillStyle = comet.color;
+            ctx.shadowColor = comet.color;
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.shadowBlur = 0;
+        });
+        
         // Текст
-        ctx.font = 'bold 24px Courier New';
-        ctx.fillStyle = '#00b7eb';
+        ctx.font = 'bold 20px Courier New';
+        ctx.fillStyle = '#00ffcc';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
         // Разбиваем текст на строки
-        const lines = text.split('\n');
-        const lineHeight = 40;
-        const startY = canvas.height / 2 - (lines.length * lineHeight) / 2;
+        const lines = text.split('\n').map(line => line.trim());
+        const lineHeight = 30;
+        const maxWidth = canvas.width - 40;
+        const wrappedLines = [];
         
-        lines.forEach((line, index) => {
+        // Обертка текста
+        lines.forEach(line => {
+            if (line.startsWith('**Цитата**')) {
+                wrappedLines.push(line);
+            } else if (line.startsWith('**Пояснение**')) {
+                wrappedLines.push(line);
+            } else {
+                const words = line.split(' ');
+                let currentLine = '';
+                words.forEach(word => {
+                    const testLine = currentLine + word + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth) {
+                        wrappedLines.push(currentLine.trim());
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+                if (currentLine) wrappedLines.push(currentLine.trim());
+            }
+        });
+        
+        // Рендеринг текста
+        const startY = canvas.height / 2 - (wrappedLines.length * lineHeight) / 2;
+        wrappedLines.forEach((line, index) => {
             ctx.fillText(line, canvas.width / 2, startY + index * lineHeight);
         });
         
@@ -150,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'inspiration.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = '#00b7eb';
+        downloadLink.style.color = '#00ffcc';
         downloadLink.style.marginTop = '10px';
         resultImage.appendChild(downloadLink);
     }
