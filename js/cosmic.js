@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const comets = [];
     const starCount = 100;
     const cometCount = 5;
-    const neonColors = ['#00d4ff', '#ff00a8', '#00ffaa'];
+    const neonColors = ['#00e6ff', '#ff00cc', '#00ff99'];
 
     // Создание звезд
     for (let i = 0; i < starCount; i++) {
@@ -26,8 +26,8 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             size: Math.random() * 2 + 1,
-            color: neonColors[Math.floor(Math.random() * neonColors.length)],
-            opacity: Math.random() * 0.5 + 0.5
+            opacity: Math.random() * 0.5 + 0.5,
+            color: neonColors[Math.floor(Math.random() * neonColors.length)]
         });
     }
 
@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             length: Math.random() * 30 + 20,
-            speed: Math.random() * 3 + 2,
+            speed: Math.random() * 2 + 1,
             angle: Math.random() * Math.PI * 2,
             color: neonColors[Math.floor(Math.random() * neonColors.length)]
         });
@@ -110,13 +110,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = event.results[0][0].transcript;
         userInput.value = message;
         sendMessage();
-        voiceButton.style.background = 'var(--neon-blue)';
+        voiceButton.style.background = 'var(--cosmic-neon-blue)';
     };
 
     recognition.onerror = () => {
         chatHistory.push({ role: 'assistant', content: '> Ошибка распознавания голоса. Попробуйте снова.' });
         updateChat();
-        voiceButton.style.background = 'var(--neon-blue)';
+        voiceButton.style.background = 'var(--cosmic-neon-blue)';
     };
 
     const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     messages: [
                         {
                             role: 'system',
-                            content: 'Ты — вдохновляющий AI-ассистент. Отвечай на любой вопрос пользователя в формате: **[Что если]** [Короткая, мощная и вдохновляющая фраза]. **[Значит]** [Краткое разъяснение фразы, мотивирующее и вдохновляющее]. Стиль — лаконичный, позитивный, энергичный. Пример: **[Что если]** Кто управляет своими эмоциями, тот управляет своей судьбой. **[Значит]** Учись распознавать и направлять эмоции, а не поддаваться им.'
+                            content: 'Ты — вдохновляющий AI-ассистент. Отвечай на любой вопрос пользователя в формате:\n[Что если]: [Короткая, мощная и вдохновляющая фраза].\n\n[Значит]: [Краткое разъяснение цитаты, мотивирующее и вдохновляющее].\nКаждый заголовок ([Что если], [Значит]) начинается с новой строки, между ними пустая строка. Стиль — лаконичный, позитивный, энергичный. Пример:\n[Что если]: Кто управляет своими эмоциями, тот управляет своей судьбой.\n\n[Значит]: Учись распознавать и направлять эмоции, а не поддаваться им.'
                         },
                         ...chatHistory
                     ],
@@ -188,13 +188,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const imgCtx = imgCanvas.getContext('2d');
 
         // Космический фон
-        const gradient = imgCtx.createLinearGradient(0, 0, 0, 960);
-        gradient.addColorStop(0, '#1c1c1c');
+        const gradient = imgCtx.createRadialGradient(270, 480, 0, 270, 480, 600);
+        gradient.addColorStop(0, '#1c1c2a');
         gradient.addColorStop(1, '#0a0a0a');
         imgCtx.fillStyle = gradient;
         imgCtx.fillRect(0, 0, 540, 960);
 
-        // Добавление звезд
+        // Добавление неоновых звезд
         for (let i = 0; i < 50; i++) {
             imgCtx.beginPath();
             imgCtx.arc(
@@ -205,25 +205,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 Math.PI * 2
             );
             imgCtx.fillStyle = neonColors[Math.floor(Math.random() * neonColors.length)];
-            imgCtx.globalAlpha = Math.random() * 0.5 + 0.5;
             imgCtx.fill();
         }
-        imgCtx.globalAlpha = 1;
 
         // Обработка текста
         imgCtx.font = 'bold 36px Arial';
-        imgCtx.fillStyle = '#e6e6ff';
+        imgCtx.fillStyle = '#e6f0ff';
         imgCtx.textAlign = 'center';
         imgCtx.textBaseline = 'middle';
 
         const lines = text.split('\n').filter(line => line.trim());
         let y = 200;
+        const maxWidth = 500;
+        const lineHeight = 45;
+
         lines.forEach(line => {
             const words = line.split(' ');
             let currentLine = '';
-            const maxWidth = 500;
-            let lineHeight = 45;
-
             for (let word of words) {
                 const testLine = currentLine + word + ' ';
                 const metrics = imgCtx.measureText(testLine);
@@ -249,9 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'ai_response.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = 'var(--neon-blue)';
+        downloadLink.style.color = 'var(--cosmic-neon-blue)';
         downloadLink.style.marginTop = '1rem';
-        downloadLink.style.fontSize = '1.5rem';
         imageOutput.appendChild(downloadLink);
     }
 });
