@@ -172,17 +172,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Настраиваемые параметры текста
-        const fontSizeBold = 40; // Размер жирного шрифта (для заголовков: Суть дня, Цитата, Пояснение)
+        const fontSizeBold = 66; // Размер жирного шрифта (для заголовков: Суть дня, Цитата, Пояснение)
         const fontSizeRegular = 60; // Размер обычного шрифта (для текста)
-        const lineHeight = 100; // Межстрочный интервал (расстояние между строками)
-        const padding = 80; // Отступы со всех сторон (в пикселях)
+        const lineHeight = 80; // Межстрочный интервал (расстояние между строками)
+        const padding = 60; // Отступы со всех сторон (в пикселях)
         const maxWidth = canvas.width - 2 * padding; // Максимальная ширина текста (в пикселях)
+        const verticalSpacingFactor = 1.2; // Множитель для равномерного распределения строк по высоте
         
         // Как настроить параметры:
         // - fontSizeBold: Увеличьте/уменьшите для изменения размера заголовков (например, 70 для больше, 50 для меньше).
         // - fontSizeRegular: Увеличьте/уменьшите для изменения размера основного текста (например, 65 или 45).
         // - lineHeight: Увеличьте для большего расстояния между строками (например, 90), уменьшите для компактности (например, 70).
         // - padding: Увеличьте для больших отступов от краев (например, 80), уменьшите для меньших (например, 40).
+        // - verticalSpacingFactor: Увеличьте (например, 1.5) для большего расстояния между строками, уменьшите (например, 1.0) для более компактного распределения.
         // - maxWidth: Не меняйте вручную, он рассчитывается как canvas.width - 2 * padding.
         
         // Текст
@@ -216,16 +218,18 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Распределяем текст равномерно
-        const textAreaHeight = canvas.height - 2 * padding; // Высота области для текста
-        const totalTextHeight = wrappedLines.length * lineHeight;
-        let startY = padding + (textAreaHeight - totalTextHeight) / 2; // Начальная Y для центрирования
+        // Распределяем текст равномерно по высоте
+        const textAreaHeight = canvas.height - 2 * padding; // Высота области для текста (1024 - 120 = 904 пикселя)
+        const totalTextHeight = wrappedLines.length * lineHeight * verticalSpacingFactor;
+        const startY = padding; // Начинаем с верхнего отступа
+        const spacing = (textAreaHeight - (wrappedLines.length * lineHeight)) / (wrappedLines.length + 1); // Равномерные промежутки
         
         // Рендеринг текста
         wrappedLines.forEach((lineObj, index) => {
             ctx.font = lineObj.bold ? `bold ${fontSizeBold}px Courier New` : `${fontSizeRegular}px Courier New`;
             ctx.fillStyle = '#00ffcc';
-            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * lineHeight);
+            const yPosition = startY + (index + 1) * spacing + (index * lineHeight);
+            ctx.fillText(lineObj.text, canvas.width / 2, yPosition);
         });
         
         // Отображение и скачивание
