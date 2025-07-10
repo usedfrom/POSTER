@@ -176,8 +176,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const marginVertical = 100; // Отступы сверху и снизу (px)
         const maxWidth = canvas.width - 2 * marginHorizontal; // Максимальная ширина текста
         const lineHeight = 80; // Межстрочный интервал
-        const fontSizeHeader = 66; // Размер шрифта для заголовков (22px * 3)
-        const fontSizeText = 60; // Размер шрифта для текста (20px * 3)
+        const fontSizeHeader = 66; // Размер шрифта для заголовков
+        const fontSizeText = 60; // Размер шрифта для текста
         
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Ограничиваем высоту текста
-        const maxTextHeight = canvas.height - 2 * marginVertical; // Доступная высота для текста
+        const maxTextHeight = canvas.height - 2 * marginVertical; // Доступная высота
         const totalTextHeight = wrappedLines.length * lineHeight;
         const startY = marginVertical + (maxTextHeight - totalTextHeight) / 2; // Центрируем по вертикали
         
