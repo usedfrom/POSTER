@@ -186,17 +186,32 @@ document.addEventListener('DOMContentLoaded', function() {
         const lines = text.split('\n').map(line => line.trim());
         const wrappedLines = [];
         
-        // Обертка текста
+        // Обработка текста: сохраняем цитату и пояснение
         lines.forEach(line => {
-            if (line.startsWith('**Цитата**')) {
+            if (line.startsWith('**Цитата**: ')) {
                 ctx.font = `bold ${fontSizeHeader}px Courier New`;
                 wrappedLines.push({ text: 'Цитата', bold: true });
-            } else if (line.startsWith('**Пояснение**')) {
+                const quoteText = line.replace('**Цитата**: ', '').trim();
+                ctx.font = `${fontSizeText}px Courier New`;
+                const words = quoteText.split(' ');
+                let currentLine = '';
+                words.forEach(word => {
+                    const testLine = currentLine + word + ' ';
+                    const metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth) {
+                        wrappedLines.push({ text: currentLine.trim(), bold: false });
+                        currentLine = word + ' ';
+                    } else {
+                        currentLine = testLine;
+                    }
+                });
+                if (currentLine) wrappedLines.push({ text: currentLine.trim(), bold: false });
+            } else if (line.startsWith('**Пояснение**: ')) {
                 ctx.font = `bold ${fontSizeHeader}px Courier New`;
                 wrappedLines.push({ text: 'Пояснение', bold: true });
-            } else {
+                const explanationText = line.replace('**Пояснение**: ', '').trim();
                 ctx.font = `${fontSizeText}px Courier New`;
-                const words = line.split(' ');
+                const words = explanationText.split(' ');
                 let currentLine = '';
                 words.forEach(word => {
                     const testLine = currentLine + word + ' ';
