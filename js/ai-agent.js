@@ -171,18 +171,14 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.shadowBlur = 0;
         });
         
-        // Настройки текста
-        const textConfig = {
-            headerFont: 'bold 66px Courier New', // Размер шрифта для заголовков (**Цитата**, **Пояснение**)
-            bodyFont: '60px Courier New',        // Размер шрифта для основного текста
-            lineHeight: 80,                      // Межстрочный интервал
-            marginHorizontal: 40,                // Отступы слева и справа
-            marginVertical: 80,                  // Отступы сверху и снизу
-            maxWidth: 576 - 80,                 // Максимальная ширина текста (576 - 2 * 40)
-            textColor: '#00ffcc'                 // Цвет текста
-        };
+        // Параметры текста
+        const marginHorizontal = 40; // Отступы слева и справа (px)
+        const marginVertical = 100; // Отступы сверху и снизу (px)
+        const maxWidth = canvas.width - 2 * marginHorizontal; // Максимальная ширина текста
+        const lineHeight = 80; // Межстрочный интервал
+        const fontSizeHeader = 66; // Размер шрифта для заголовков (22px * 3)
+        const fontSizeText = 60; // Размер шрифта для текста (20px * 3)
         
-        // Текст
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
@@ -192,17 +188,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Обертка текста
         lines.forEach(line => {
-            if (line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
-                ctx.font = textConfig.headerFont;
-                wrappedLines.push({ text: line, bold: true });
+            if (line.startsWith('**Цитата**')) {
+                ctx.font = `bold ${fontSizeHeader}px Courier New`;
+                wrappedLines.push({ text: 'Цитата', bold: true });
+            } else if (line.startsWith('**Пояснение**')) {
+                ctx.font = `bold ${fontSizeHeader}px Courier New`;
+                wrappedLines.push({ text: 'Пояснение', bold: true });
             } else {
-                ctx.font = textConfig.bodyFont;
+                ctx.font = `${fontSizeText}px Courier New`;
                 const words = line.split(' ');
                 let currentLine = '';
                 words.forEach(word => {
                     const testLine = currentLine + word + ' ';
                     const metrics = ctx.measureText(testLine);
-                    if (metrics.width > textConfig.maxWidth) {
+                    if (metrics.width > maxWidth) {
                         wrappedLines.push({ text: currentLine.trim(), bold: false });
                         currentLine = word + ' ';
                     } else {
@@ -213,15 +212,16 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Вычисляем высоту текста
-        const totalTextHeight = wrappedLines.length * textConfig.lineHeight;
-        const startY = textConfig.marginVertical + (canvas.height - 2 * textConfig.marginVertical - totalTextHeight) / 2;
+        // Ограничиваем высоту текста
+        const maxTextHeight = canvas.height - 2 * marginVertical; // Доступная высота для текста
+        const totalTextHeight = wrappedLines.length * lineHeight;
+        const startY = marginVertical + (maxTextHeight - totalTextHeight) / 2; // Центрируем по вертикали
         
         // Рендеринг текста
         wrappedLines.forEach((lineObj, index) => {
-            ctx.font = lineObj.bold ? textConfig.headerFont : textConfig.bodyFont;
-            ctx.fillStyle = textConfig.textColor;
-            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * textConfig.lineHeight);
+            ctx.font = lineObj.bold ? `bold ${fontSizeHeader}px Courier New` : `${fontSizeText}px Courier New`;
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * lineHeight);
         });
         
         // Отображение и скачивание
@@ -235,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'inspiration.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = textConfig.textColor;
+        downloadLink.style.color = '#00ffcc';
         downloadLink.style.marginTop = '10px';
         resultImage.appendChild(downloadLink);
     }
