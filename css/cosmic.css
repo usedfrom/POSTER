@@ -1,8 +1,11 @@
 :root {
-    --cosmic-black: #0a0a1f;
-    --cosmic-blue: #00b7eb;
+    --cosmic-black: #0a0a0a;
+    --cosmic-gray: #1c1c1e;
+    --neon-blue: #00b7eb;
+    --neon-pink: #ff00a8;
+    --neon-purple: #bd00ff;
     --cosmic-white: #e6f0ff;
-    --cosmic-glow: 0 0 10px rgba(0, 183, 235, 0.5);
+    --cosmic-glow: 0 0 10px rgba(0, 183, 235, 0.7);
 }
 
 * {
@@ -26,7 +29,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: radial-gradient(circle at center, #1a1a3d 0%, #0a0a1f 100%);
+    background: linear-gradient(180deg, var(--cosmic-black) 0%, var(--cosmic-gray) 100%);
     z-index: -1;
 }
 
@@ -44,8 +47,8 @@ body {
     max-height: 50vh;
     overflow-y: auto;
     padding: 1rem;
-    background: rgba(10, 10, 31, 0.8);
-    border: 1px solid var(--cosmic-blue);
+    background: rgba(10, 10, 10, 0.8);
+    border: 1px solid var(--neon-blue);
     border-radius: 10px;
     color: var(--cosmic-white);
 }
@@ -57,7 +60,7 @@ body {
 }
 
 .chat-message.user {
-    color: #00ffcc;
+    color: var(--neon-pink);
 }
 
 .chat-message.agent {
@@ -71,7 +74,7 @@ body {
 
 .image-output img {
     max-width: 100%;
-    border: 1px solid var(--cosmic-blue);
+    border: 1px solid var(--neon-blue);
     border-radius: 10px;
 }
 
@@ -79,8 +82,8 @@ body {
     display: flex;
     gap: 1rem;
     padding: 1rem;
-    background: rgba(10, 10, 31, 0.9);
-    border: 1px solid var(--cosmic-blue);
+    background: rgba(10, 10, 10, 0.9);
+    border: 1px solid var(--neon-blue);
     border-radius: 20px;
     position: sticky;
     bottom: 1rem;
@@ -97,7 +100,7 @@ body {
 }
 
 .input-panel input::placeholder {
-    color: var(--cosmic-blue);
+    color: var(--neon-blue);
 }
 
 .cosmic-button {
@@ -106,7 +109,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--cosmic-blue);
+    background: var(--neon-blue);
     border-radius: 50%;
     color: var(--cosmic-white);
     cursor: pointer;
