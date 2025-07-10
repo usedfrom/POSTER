@@ -1,14 +1,13 @@
 :root {
-    --cosmic-black: #0a0a0a;
-    --cosmic-gray: #1c1c2a;
-    --cosmic-neon-blue: #00ccff;
-    --cosmic-neon-red: #ff4d4d;
-    --cosmic-neon-pink: #ff00cc;
-    --cosmic-white: #e6f0ff;
-    --cosmic-cloud-gray: rgba(200, 200, 200, 0.2);
-    --cosmic-cloud-red: rgba(255, 100, 100, 0.2);
-    --cosmic-cloud-blue: rgba(100, 150, 255, 0.2);
-    --cosmic-glow: 0 0 10px rgba(0, 204, 255, 0.7);
+    --cosmic-black: #000000;
+    --cosmic-gray: #1a1a1a;
+    --cosmic-cloud-gray: #4a4a4a;
+    --cosmic-cloud-red: #ff4040;
+    --cosmic-cloud-light: #e6e6e6;
+    --cosmic-neon-pink: #ff00ff;
+    --cosmic-neon-cyan: #00ffcc;
+    --cosmic-white: #f0f0f0;
+    --cosmic-glow: 0 0 12px rgba(255, 0, 255, 0.7);
 }
 
 * {
@@ -23,7 +22,7 @@ body {
     font-family: 'Arial', sans-serif;
     overflow-y: auto;
     min-height: 100vh;
-    line-height: 1.4;
+    line-height: 1.6;
 }
 
 .cosmic-background {
@@ -43,27 +42,27 @@ body {
     padding: 1rem 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
 }
 
 .chat-body {
     max-height: 50vh;
     overflow-y: auto;
     padding: 0.8rem;
-    background: rgba(10, 10, 10, 0.85);
-    border: 1px solid var(--cosmic-neon-blue);
-    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid var(--cosmic-neon-pink);
+    border-radius: 10px;
     color: var(--cosmic-white);
 }
 
 .chat-message {
-    margin: 0.4rem 0;
-    font-size: 1.2rem;
-    line-height: 1.3;
+    margin: 0.5rem 0;
+    font-size: 1.5rem;
+    line-height: 1.4;
 }
 
 .chat-message.user {
-    color: var(--cosmic-neon-red);
+    color: var(--cosmic-neon-cyan);
 }
 
 .chat-message.agent {
@@ -71,56 +70,54 @@ body {
 }
 
 .image-output {
-    margin: 0.5rem 0;
+    margin: 1rem 0;
     text-align: center;
 }
 
 .image-output img {
     max-width: 100%;
-    border: 1px solid var(--cosmic-neon-blue);
-    border-radius: 8px;
+    border: 1px solid var(--cosmic-neon-pink);
+    border-radius: 10px;
 }
 
 .input-panel {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
-    padding: 0.6rem;
-    background: rgba(10, 10, 10, 0.9);
-    border: 1px solid var(--cosmic-neon-blue);
-    border-radius: 16px;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.9);
+    border: 1px solid var(--cosmic-neon-pink);
+    border-radius: 20px;
     position: sticky;
     bottom: 0.5rem;
-    flex-wrap: nowrap;
-    align-items: center;
 }
 
 .input-panel input {
     flex: 1;
+    min-width: 0;
     padding: 0.6rem;
     background: transparent;
     border: none;
     color: var(--cosmic-white);
-    font-size: 1rem;
+    font-size: 1.5rem;
     outline: none;
-    min-width: 0;
 }
 
 .input-panel input::placeholder {
-    color: var(--cosmic-neon-blue);
+    color: var(--cosmic-neon-pink);
 }
 
 .cosmic-button {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--cosmic-neon-blue);
+    background: var(--cosmic-neon-pink);
     border-radius: 50%;
     color: var(--cosmic-white);
     cursor: pointer;
     transition: all 0.3s;
-    flex-shrink: 0;
 }
 
 .cosmic-button:hover {
@@ -137,14 +134,13 @@ body {
         font-size: 1rem;
     }
     .input-panel {
-        padding: 0.4rem;
-        gap: 0.4rem;
+        padding: 0.5rem;
     }
     .input-panel input {
-        font-size: 0.9rem;
+        font-size: 1rem;
     }
     .cosmic-button {
-        width: 32px;
-        height: 32px;
+        width: 28px;
+        height: 28px;
     }
 }
