@@ -172,44 +172,48 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         // Текст
-        ctx.font = 'bold 20px Courier New';
-        ctx.fillStyle = '#00ffcc';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         
         // Разбиваем текст на строки
         const lines = text.split('\n').map(line => line.trim());
-        const lineHeight = 30;
-        const maxWidth = canvas.width - 40;
+        const maxWidth = canvas.width - 80; // Отступы 40px с каждой стороны
+        const lineHeight = 28;
         const wrappedLines = [];
         
         // Обертка текста
         lines.forEach(line => {
-            if (line.startsWith('**Цитата**')) {
-                wrappedLines.push(line);
-            } else if (line.startsWith('**Пояснение**')) {
-                wrappedLines.push(line);
+            if (line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
+                ctx.font = 'bold 22px Courier New';
+                wrappedLines.push({ text: line, bold: true });
             } else {
+                ctx.font = '20px Courier New';
                 const words = line.split(' ');
                 let currentLine = '';
                 words.forEach(word => {
                     const testLine = currentLine + word + ' ';
                     const metrics = ctx.measureText(testLine);
                     if (metrics.width > maxWidth) {
-                        wrappedLines.push(currentLine.trim());
+                        wrappedLines.push({ text: currentLine.trim(), bold: false });
                         currentLine = word + ' ';
                     } else {
                         currentLine = testLine;
                     }
                 });
-                if (currentLine) wrappedLines.push(currentLine.trim());
+                if (currentLine) wrappedLines.push({ text: currentLine.trim(), bold: false });
             }
         });
         
+        // Ограничиваем высоту текста
+        const maxTextHeight = canvas.height - 200; // Отступы 100px сверху и снизу
+        const totalTextHeight = wrappedLines.length * lineHeight;
+        const startY = (canvas.height - totalTextHeight) / 2; // Центрируем по вертикали
+        
         // Рендеринг текста
-        const startY = canvas.height / 2 - (wrappedLines.length * lineHeight) / 2;
-        wrappedLines.forEach((line, index) => {
-            ctx.fillText(line, canvas.width / 2, startY + index * lineHeight);
+        wrappedLines.forEach((lineObj, index) => {
+            ctx.font = lineObj.bold ? 'bold 22px Courier New' : '20px Courier New';
+            ctx.fillStyle = '#00ffcc';
+            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * lineHeight);
         });
         
         // Отображение и скачивание
