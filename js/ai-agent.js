@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     messages: [
                         {
                             role: 'system',
-                            content: 'Ты — AI-ассистент, создающий вдохновляющие цитаты по любой теме, заданной пользователем. Формат ответа: \n**Суть дня**: [Краткое вдохновляющее утверждение, задающее тон дня].\n**Цитата**: [Короткая, мощная фраза, вдохновляющая на действие или размышление].\n**Пояснение**: [Краткое объяснение смысла цитаты, мотивирующее и поддерживающее].\nСтиль — лаконичный, вдохновляющий, с элементами киберпанка. Используй термины: "сила", "энергия", "цель", "путь". Игнорируй вопросы, выходящие за рамки создания цитат, и перенаправляй к теме вдохновения. Пример:\n**Суть дня**: Сегодня ты создаешь свой путь.\n**Цитата**: Сила твоего пути — в каждом сделанном шаге.\n**Пояснение**: Каждый выбор приближает тебя к цели — двигайся с энергией и верой.'
+                            content: 'Ты — AI-ассистент, создающий вдохновляющие цитаты по любой теме, заданной пользователем. Формат ответа: \n**Цитата**: [Короткая, мощная фраза, вдохновляющая на действие или размышление].\n**Пояснение**: [Краткое объяснение смысла цитаты, мотивирующее и поддерживающее].\nСтиль — лаконичный, вдохновляющий, с элементами киберпанка. Используй термины: "сила", "энергия", "цель", "путь". Игнорируй вопросы, выходящие за рамки создания цитат, и перенаправляй к теме вдохновения. Пример:\n**Цитата**: Сила твоего пути — в каждом сделанном шаге.\n**Пояснение**: Каждый выбор приближает тебя к цели — двигайся с энергией и верой.'
                         },
                         ...chatHistory
                     ],
@@ -171,21 +171,16 @@ document.addEventListener('DOMContentLoaded', function() {
             ctx.shadowBlur = 0;
         });
         
-        // Настраиваемые параметры текста
-        const fontSizeBold = 66; // Размер жирного шрифта (для заголовков: Суть дня, Цитата, Пояснение)
-        const fontSizeRegular = 60; // Размер обычного шрифта (для текста)
-        const lineHeight = 80; // Межстрочный интервал (расстояние между строками)
-        const padding = 60; // Отступы со всех сторон (в пикселях)
-        const maxWidth = canvas.width - 2 * padding; // Максимальная ширина текста (в пикселях)
-        const verticalSpacingFactor = 1.2; // Множитель для равномерного распределения строк по высоте
-        
-        // Как настроить параметры:
-        // - fontSizeBold: Увеличьте/уменьшите для изменения размера заголовков (например, 70 для больше, 50 для меньше).
-        // - fontSizeRegular: Увеличьте/уменьшите для изменения размера основного текста (например, 65 или 45).
-        // - lineHeight: Увеличьте для большего расстояния между строками (например, 90), уменьшите для компактности (например, 70).
-        // - padding: Увеличьте для больших отступов от краев (например, 80), уменьшите для меньших (например, 40).
-        // - verticalSpacingFactor: Увеличьте (например, 1.5) для большего расстояния между строками, уменьшите (например, 1.0) для более компактного распределения.
-        // - maxWidth: Не меняйте вручную, он рассчитывается как canvas.width - 2 * padding.
+        // Настройки текста
+        const textConfig = {
+            headerFont: 'bold 66px Courier New', // Размер шрифта для заголовков (**Цитата**, **Пояснение**)
+            bodyFont: '60px Courier New',        // Размер шрифта для основного текста
+            lineHeight: 80,                      // Межстрочный интервал
+            marginHorizontal: 40,                // Отступы слева и справа
+            marginVertical: 80,                  // Отступы сверху и снизу
+            maxWidth: 576 - 80,                 // Максимальная ширина текста (576 - 2 * 40)
+            textColor: '#00ffcc'                 // Цвет текста
+        };
         
         // Текст
         ctx.textAlign = 'center';
@@ -197,17 +192,17 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Обертка текста
         lines.forEach(line => {
-            if (line.startsWith('**Суть дня**') || line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
-                ctx.font = `bold ${fontSizeBold}px Courier New`;
+            if (line.startsWith('**Цитата**') || line.startsWith('**Пояснение**')) {
+                ctx.font = textConfig.headerFont;
                 wrappedLines.push({ text: line, bold: true });
             } else {
-                ctx.font = `${fontSizeRegular}px Courier New`;
+                ctx.font = textConfig.bodyFont;
                 const words = line.split(' ');
                 let currentLine = '';
                 words.forEach(word => {
                     const testLine = currentLine + word + ' ';
                     const metrics = ctx.measureText(testLine);
-                    if (metrics.width > maxWidth) {
+                    if (metrics.width > textConfig.maxWidth) {
                         wrappedLines.push({ text: currentLine.trim(), bold: false });
                         currentLine = word + ' ';
                     } else {
@@ -218,18 +213,15 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // Распределяем текст равномерно по высоте
-        const textAreaHeight = canvas.height - 2 * padding; // Высота области для текста (1024 - 120 = 904 пикселя)
-        const totalTextHeight = wrappedLines.length * lineHeight * verticalSpacingFactor;
-        const startY = padding; // Начинаем с верхнего отступа
-        const spacing = (textAreaHeight - (wrappedLines.length * lineHeight)) / (wrappedLines.length + 1); // Равномерные промежутки
+        // Вычисляем высоту текста
+        const totalTextHeight = wrappedLines.length * textConfig.lineHeight;
+        const startY = textConfig.marginVertical + (canvas.height - 2 * textConfig.marginVertical - totalTextHeight) / 2;
         
         // Рендеринг текста
         wrappedLines.forEach((lineObj, index) => {
-            ctx.font = lineObj.bold ? `bold ${fontSizeBold}px Courier New` : `${fontSizeRegular}px Courier New`;
-            ctx.fillStyle = '#00ffcc';
-            const yPosition = startY + (index + 1) * spacing + (index * lineHeight);
-            ctx.fillText(lineObj.text, canvas.width / 2, yPosition);
+            ctx.font = lineObj.bold ? textConfig.headerFont : textConfig.bodyFont;
+            ctx.fillStyle = textConfig.textColor;
+            ctx.fillText(lineObj.text, canvas.width / 2, startY + index * textConfig.lineHeight);
         });
         
         // Отображение и скачивание
@@ -243,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'inspiration.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = '#00ffcc';
+        downloadLink.style.color = textConfig.textColor;
         downloadLink.style.marginTop = '10px';
         resultImage.appendChild(downloadLink);
     }
