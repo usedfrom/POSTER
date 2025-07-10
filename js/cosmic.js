@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const comets = [];
     const starCount = 100;
     const cometCount = 5;
+    const neonColors = ['#00b7eb', '#ff00a8', '#bd00ff'];
 
     // Создание звезд
     for (let i = 0; i < starCount; i++) {
@@ -25,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             size: Math.random() * 2 + 1,
+            color: neonColors[Math.floor(Math.random() * neonColors.length)],
             opacity: Math.random() * 0.5 + 0.5
         });
     }
@@ -35,8 +37,9 @@ document.addEventListener('DOMContentLoaded', function() {
             x: Math.random() * canvas.width,
             y: Math.random() * canvas.height,
             length: Math.random() * 30 + 20,
-            speed: Math.random() * 2 + 1,
-            angle: Math.random() * Math.PI * 2
+            speed: Math.random() * 3 + 2,
+            angle: Math.random() * Math.PI * 2,
+            color: neonColors[Math.floor(Math.random() * neonColors.length)]
         });
     }
 
@@ -47,10 +50,12 @@ document.addEventListener('DOMContentLoaded', function() {
         stars.forEach(star => {
             ctx.beginPath();
             ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            ctx.fillStyle = star.color;
+            ctx.globalAlpha = star.opacity;
             ctx.fill();
             star.opacity = Math.max(0.3, star.opacity + (Math.random() - 0.5) * 0.02);
         });
+        ctx.globalAlpha = 1;
 
         // Рисование комет
         comets.forEach(comet => {
@@ -63,12 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 comet.x = Math.random() * canvas.width;
                 comet.y = Math.random() * canvas.height;
                 comet.angle = Math.random() * Math.PI * 2;
+                comet.color = neonColors[Math.floor(Math.random() * neonColors.length)];
             }
 
             ctx.beginPath();
             ctx.moveTo(comet.x, comet.y);
             ctx.lineTo(comet.x - dx * comet.length, comet.y - dy * comet.length);
-            ctx.strokeStyle = 'rgba(0, 183, 235, 0.7)';
+            ctx.strokeStyle = comet.color;
             ctx.lineWidth = 2;
             ctx.stroke();
         });
@@ -97,20 +103,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     voiceButton.addEventListener('click', () => {
         recognition.start();
-        voiceButton.style.background = '#00ffcc';
+        voiceButton.style.background = '#ff00a8';
     });
 
     recognition.onresult = (event) => {
         const message = event.results[0][0].transcript;
         userInput.value = message;
         sendMessage();
-        voiceButton.style.background = 'var(--cosmic-blue)';
+        voiceButton.style.background = 'var(--neon-blue)';
     };
 
     recognition.onerror = () => {
         chatHistory.push({ role: 'assistant', content: '> Ошибка распознавания голоса. Попробуйте снова.' });
         updateChat();
-        voiceButton.style.background = 'var(--cosmic-blue)';
+        voiceButton.style.background = 'var(--neon-blue)';
     };
 
     const baseUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -139,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     messages: [
                         {
                             role: 'system',
-                            content: 'Ты — вдохновляющий AI-ассистент. Отвечай на любой вопрос пользователя в формате: **Цитата**: [Короткая, мощная и вдохновляющая фраза]. **Пояснение**: [Краткое разъяснение цитаты, мотивирующее и вдохновляющее]. Стиль — лаконичный, позитивный, энергичный. Пример: **Цитата**: Кто управляет своими эмоциями, тот управляет своей судьбой. **Пояснение**: Учись распознавать и направлять эмоции, а не поддаваться им.'
+                            content: 'Ты — вдохновляющий AI-ассистент. Отвечай на любой вопрос пользователя в формате: [Короткая, мощная и вдохновляющая фраза]. [Краткое разъяснение фразы, мотивирующее и вдохновляющее, без использования слов "Цитата" и "Пояснение"]. Стиль — лаконичный, позитивный, энергичный. Пример: Кто управляет своими эмоциями, тот управляет своей судьбой. Учись распознавать и направлять эмоции, а не поддаваться им.'
                         },
                         ...chatHistory
                     ],
@@ -182,9 +188,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const imgCtx = imgCanvas.getContext('2d');
 
         // Космический фон
-        const gradient = imgCtx.createRadialGradient(270, 480, 0, 270, 480, 600);
-        gradient.addColorStop(0, '#1a1a3d');
-        gradient.addColorStop(1, '#0a0a1f');
+        const gradient = imgCtx.createLinearGradient(0, 0, 0, 960);
+        gradient.addColorStop(0, '#0a0a0a');
+        gradient.addColorStop(1, '#1c1c1e');
         imgCtx.fillStyle = gradient;
         imgCtx.fillRect(0, 0, 540, 960);
 
@@ -198,24 +204,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 0,
                 Math.PI * 2
             );
-            imgCtx.fillStyle = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+            imgCtx.fillStyle = neonColors[Math.floor(Math.random() * neonColors.length)];
             imgCtx.fill();
         }
 
         // Обработка текста
-        imgCtx.font = 'bold 24px Arial';
+        imgCtx.font = 'bold 32px Arial';
         imgCtx.fillStyle = '#e6f0ff';
         imgCtx.textAlign = 'center';
         imgCtx.textBaseline = 'middle';
 
         const lines = text.split('\n').filter(line => line.trim());
-        let y = 200;
-        lines.forEach(line => {
-            const words = line.split(' ');
-            let currentLine = '';
-            const maxWidth = 500;
-            let lineHeight = 30;
+        const maxWidth = 500;
+        const lineHeight = 40;
+        let totalHeight = lines.length * lineHeight;
+        let y = 480 - (totalHeight / 2); // Центрирование по вертикали
 
+        lines.forEach(line => {
+            let currentLine = '';
+            const words = line.split(' ');
             for (let word of words) {
                 const testLine = currentLine + word + ' ';
                 const metrics = imgCtx.measureText(testLine);
@@ -228,7 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
             imgCtx.fillText(currentLine, 270, y);
-            y += lineHeight * 1.5;
+            y += lineHeight;
         });
 
         const img = new Image();
@@ -241,7 +248,7 @@ document.addEventListener('DOMContentLoaded', function() {
         downloadLink.download = 'ai_response.png';
         downloadLink.textContent = 'Скачать изображение';
         downloadLink.style.display = 'block';
-        downloadLink.style.color = 'var(--cosmic-blue)';
+        downloadLink.style.color = 'var(--neon-blue)';
         downloadLink.style.marginTop = '1rem';
         imageOutput.appendChild(downloadLink);
     }
